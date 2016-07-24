@@ -1,55 +1,42 @@
 (ns net.seabears.hockey.routes.predictions
   (:require [liberator.representation :refer [ring-response]]
             [clj-time.core :refer [date-time]]
-            [clj-time.coerce :as coerce]))
+            [clj-time.coerce :as coerce]
+            [net.seabears.hockey.models.db :as db]))
 
-(defn home-team []
-  {:name "Buffalo Sabres"
-   :location "Buffalo"})
+(defn adapt-team [result bench]
+  (let [location-keyword (keyword (str bench "_location"))
+        pred-keyword (keyword (str bench "_pred"))
+        score-keyword (keyword (str bench "_score"))
+        team-keyword (keyword (str bench))
+        team {:team {:name (team-keyword result)
+                     :location (location-keyword result)}
+              :prediction {:score (pred-keyword result)
+                           :confidence 0.0}}]
+    {(keyword bench)
+     (if (contains? result score-keyword)
+       (assoc team :score (score-keyword result))
+       team)}))
 
-(defn away-team []
-  {:name "Carolina Hurricanes"
-   :location "Carolina"})
+(defn adapt-result [result]
+  (merge
+    {:scheduled (-> result
+                    :scheduled
+                    coerce/from-sql-date
+                    coerce/to-string)}
+    (adapt-team result "home")
+    (adapt-team result "away")))
+
+(defn adapt-results [results]
+  {:games (map adapt-result results)})
 
 (defn upcoming [ctx]
   (ring-response
-    {:games
-     [{:scheduled (coerce/to-string (date-time 1986 10 14 4 3 27 456))
-       :home {:team (home-team)
-              :prediction {:score 1
-                           :confidence 0.57}}
-       :away {:team (away-team)
-              :prediction {:score 2
-                           :confidence 0.45}}}
-      {:scheduled (coerce/to-string (date-time 1986 10 14 4 3 27 456))
-       :home {:team (home-team)
-              :prediction {:score 3
-                           :confidence 0.57}}
-       :away {:team (away-team)
-              :prediction {:score 1
-                           :confidence 0.45}}}]}
+    (adapt-results (db/upcoming-games))
     {:headers {"Access-Control-Allow-Origin" "*"}}))
   
 (defn recent [ctx]
   (ring-response
-    {:games
-     [{:scheduled (coerce/to-string (date-time 1986 10 14 4 3 27 456))
-       :home {:team (home-team)
-              :score 2
-              :prediction {:score 1
-                           :confidence 0.57}}
-       :away {:team (away-team)
-              :score 3
-              :prediction {:score 2
-                           :confidence 0.45}}}
-      {:scheduled (coerce/to-string (date-time 1986 10 14 4 3 27 456))
-       :home {:team (home-team)
-              :score 2
-              :prediction {:score 3
-                           :confidence 0.57}}
-       :away {:team (away-team)
-              :score 4
-              :prediction {:score 1
-                           :confidence 0.45}}}]}
+    (adapt-results (db/recent-games))
     {:headers {"Access-Control-Allow-Origin" "*"}}))
 
