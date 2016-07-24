@@ -9,8 +9,8 @@
         pred-keyword (keyword (str bench "_pred"))
         score-keyword (keyword (str bench "_score"))
         team-keyword (keyword (str bench))
-        team {:team {:name (team-keyword result)
-                     :location (location-keyword result)}
+        team {:team {:name (str (team-keyword result))
+                     :location (str (location-keyword result))}
               :prediction {:score (pred-keyword result)
                            :confidence 0.0}}]
     {(keyword bench)
@@ -20,6 +20,7 @@
 
 (defn adapt-result [result]
   (merge
+    {:id (:id result)}
     {:scheduled (-> result
                     :scheduled
                     coerce/from-sql-date
