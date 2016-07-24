@@ -4,7 +4,14 @@ A web service that provides predictions of hockey games. Written in Clojure, bui
 
 ## Usage
 
+Source configuration variables, then run
+
     lein ring server-headless
+
+or
+
+    lein ring uberjar
+    java -jar target/hockey-predictions-service-0.1.0-SNAPSHOT-standalone.jar
 
 ## License
 
