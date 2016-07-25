@@ -33,11 +33,11 @@
 
 (defn upcoming [ctx]
   (ring-response
-    (adapt-results (db/upcoming-games))
+    (adapt-results (db/upcoming-games 90 20))
     {:headers {"Access-Control-Allow-Origin" "*"}}))
   
 (defn recent [ctx]
   (ring-response
-    (adapt-results (db/recent-games))
+    (adapt-results (db/recent-games 90 20))
     {:headers {"Access-Control-Allow-Origin" "*"}}))
 
