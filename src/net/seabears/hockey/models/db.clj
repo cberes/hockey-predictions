@@ -20,14 +20,15 @@
     @db
     ["select g._id as id, g.scheduled,
              h.name as home, h.location as home_location,
-             coalesce(p.home_score, 0) as home_pred,
              a.name as away, a.location as away_location,
-             coalesce(p.away_score, 0) as away_pred
+             round(cast(coalesce(4.6523 + 1.3305 * dh.corsi_rel + 0.4913 * da.corsi_rel, 0.0) as numeric), 1) as over_under,
+             round(cast(coalesce(0.4595 + 5.1658 * dh.corsi_rel - 5.8210 * da.corsi_rel, 0.0) as numeric), 1) as spread
      from game g
      join team h on h._id = g.home_team_id
      join team a on a._id = g.away_team_id
      left outer join game_result res on res.game_id = g._id
-     join predictions p on g._id = p.game_id
+     left outer join past_corsi_rel dh on g._id = dh.game_id and h._id = dh.team_id
+     left outer join past_corsi_rel da on g._id = da.game_id and a._id = da.team_id
      where g.scheduled <= now() + ? * interval '1 day'
      and res.game_id is null
      order by g.scheduled
@@ -39,14 +40,15 @@
     @db
     ["select g._id as id, g.scheduled,
              h.name as home, h.location as home_location, res.home_score,
-             coalesce(p.home_score, 0) as home_pred,
              a.name as away, a.location as away_location, res.away_score,
-             coalesce(p.away_score, 0) as away_pred
+             round(cast(coalesce(4.6523 + 1.3305 * dh.corsi_rel + 0.4913 * da.corsi_rel, 0.0) as numeric), 1) as over_under,
+             round(cast(coalesce(0.4595 + 5.1658 * dh.corsi_rel - 5.8210 * da.corsi_rel, 0.0) as numeric), 1) as spread
      from game g
      join team h on h._id = g.home_team_id
      join team a on a._id = g.away_team_id
      join game_result res on res.game_id = g._id
-     join predictions p on g._id = p.game_id
+     left outer join past_corsi_rel dh on g._id = dh.game_id and h._id = dh.team_id
+     left outer join past_corsi_rel da on g._id = da.game_id and a._id = da.team_id
      where g.scheduled >= now() - ? * interval '1 day'
      order by g.scheduled desc
      limit ?" days n]

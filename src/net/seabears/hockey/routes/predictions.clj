@@ -6,13 +6,10 @@
 
 (defn adapt-team [result bench]
   (let [location-keyword (keyword (str bench "_location"))
-        pred-keyword (keyword (str bench "_pred"))
         score-keyword (keyword (str bench "_score"))
         team-keyword (keyword (str bench))
         team {:team {:name (str (team-keyword result))
-                     :location (str (location-keyword result))}
-              :prediction {:score (pred-keyword result)
-                           :confidence 0.0}}]
+                     :location (str (location-keyword result))}}]
     {(keyword bench)
      (if (contains? result score-keyword)
        (assoc team :score (score-keyword result))
@@ -25,6 +22,7 @@
                     :scheduled
                     coerce/from-sql-date
                     coerce/to-string)}
+    {:prediction {:over-under (:over_under result) :spread (:spread result)}}
     (adapt-team result "home")
     (adapt-team result "away")))
 
