@@ -21,8 +21,10 @@
     ["select g._id as id, g.scheduled,
              h.name as home, h.location as home_location,
              a.name as away, a.location as away_location,
-             round(cast(coalesce(4.6523 + 1.3305 * dh.corsi_rel + 0.4913 * da.corsi_rel, 0.0) as numeric), 1) as over_under,
-             round(cast(coalesce(0.4595 + 5.1658 * dh.corsi_rel - 5.8210 * da.corsi_rel, 0.0) as numeric), 1) as spread
+             coalesce(2.606 + 3.685 * dh.corsi_rel - 3.200 * da.corsi_rel, 0.0) as home_pred,
+             coalesce(2.675 - 3.655 * dh.corsi_rel + 3.300 * da.corsi_rel, 0.0) as away_pred,
+             coalesce(5.28163 + 0.03059 * dh.corsi_rel + 0.10037 * da.corsi_rel, 0.0) as over_under,
+             coalesce(-0.06864 + 7.33985 * dh.corsi_rel - 6.50023 * da.corsi_rel, 0.0) as spread
      from game g
      join team h on h._id = g.home_team_id
      join team a on a._id = g.away_team_id
@@ -41,8 +43,10 @@
     ["select g._id as id, g.scheduled,
              h.name as home, h.location as home_location, res.home_score,
              a.name as away, a.location as away_location, res.away_score,
-             round(cast(coalesce(4.6523 + 1.3305 * dh.corsi_rel + 0.4913 * da.corsi_rel, 0.0) as numeric), 1) as over_under,
-             round(cast(coalesce(0.4595 + 5.1658 * dh.corsi_rel - 5.8210 * da.corsi_rel, 0.0) as numeric), 1) as spread
+             coalesce(2.606 + 3.685 * dh.corsi_rel - 3.200 * da.corsi_rel, 0.0) as home_pred,
+             coalesce(2.675 - 3.655 * dh.corsi_rel + 3.300 * da.corsi_rel, 0.0) as away_pred,
+             coalesce(5.28163 + 0.03059 * dh.corsi_rel + 0.10037 * da.corsi_rel, 0.0) as over_under,
+             coalesce(-0.06864 + 7.33985 * dh.corsi_rel - 6.50023 * da.corsi_rel, 0.0) as spread
      from game g
      join team h on h._id = g.home_team_id
      join team a on a._id = g.away_team_id

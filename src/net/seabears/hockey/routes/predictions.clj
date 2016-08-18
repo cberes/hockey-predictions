@@ -22,7 +22,10 @@
                     :scheduled
                     coerce/from-sql-date
                     coerce/to-string)}
-    {:prediction {:overunder (:over_under result) :spread (:spread result)}}
+    {:prediction {:home_score (:home_pred result)
+                  :away_score (:away_pred result)
+                  :over_under (:over_under result)
+                  :spread (:spread result)}}
     (adapt-team result "home")
     (adapt-team result "away")))
 
