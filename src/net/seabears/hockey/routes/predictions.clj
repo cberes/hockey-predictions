@@ -4,6 +4,10 @@
             [clj-time.coerce :as coerce]
             [net.seabears.hockey.models.db :as db]))
 
+(def default-headers
+  (delay {"Access-Control-Allow-Origin" (System/getenv "HOCKEY_WEB_CORS_HOST")
+          "Cache-Control" (str "max-age=" (System/getenv "HOCKEY_WEB_CACHE_SECS"))}))
+
 (defn adapt-team [result bench]
   (let [location-keyword (keyword (str bench "_location"))
         score-keyword (keyword (str bench "_score"))
@@ -35,10 +39,10 @@
 (defn upcoming [ctx]
   (ring-response
     (adapt-results (db/upcoming-games 90 20))
-    {:headers {"Access-Control-Allow-Origin" "*"}}))
+    {:headers @default-headers}))
   
 (defn recent [ctx]
   (ring-response
     (adapt-results (db/recent-games 90 20))
-    {:headers {"Access-Control-Allow-Origin" "*"}}))
+    {:headers @default-headers}))
 
