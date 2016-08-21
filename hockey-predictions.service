@@ -1,0 +1,16 @@
+[Unit]
+Description=hockey predictions web service
+After=network.target
+
+[Service]
+User=hockey
+Type=simple
+EnvironmentFile=/etc/sysconfig/hockey-predictions
+WorkingDirectory=/opt/hockey-predictions
+ExecStart=java -jar hockey-predictions.jar
+PIDFile=/var/run/hockey-predictions.pid
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

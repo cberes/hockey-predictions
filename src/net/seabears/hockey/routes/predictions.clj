@@ -15,13 +15,15 @@
         team {:team {:name (str (team-keyword result))
                      :location (str (location-keyword result))}}]
     {(keyword bench)
-     (if (contains? result score-keyword)
+     (if (some? (score-keyword result))
        (assoc team :score (score-keyword result))
        team)}))
 
 (defn adapt-result [result]
   (merge
     {:id (:id result)}
+    {:status (if (and (some? (:away_score result))
+                      (some? (:home_score result))) "F" "S")}
     {:scheduled (-> result
                     :scheduled
                     coerce/from-sql-date
@@ -36,13 +38,18 @@
 (defn adapt-results [results]
   {:games (map adapt-result results)})
 
-(defn upcoming [ctx]
+(defn upcoming-games [ctx]
   (ring-response
     (adapt-results (db/upcoming-games 90 20))
     {:headers @default-headers}))
   
-(defn recent [ctx]
+(defn recent-games [ctx]
   (ring-response
     (adapt-results (db/recent-games 90 20))
+    {:headers @default-headers}))
+
+(defn game [ctx id]
+  (ring-response
+    (adapt-results (db/game id))
     {:headers @default-headers}))
 
