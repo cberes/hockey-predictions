@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+readonly dir=/opt/hockey-predictions
+sudo yum -y remove java-1.7.0
+sudo yum -y install java-1.8.0 postgresql95
+sudo useradd -d $dir -m hockey
+sudo chmod 755 $dir
+sudo touch $dir/out.log
+sudo touch $dir/config
+sudo touch $dir/start
+sudo chmod 755 $dir/start
+sudo mv hockey-predictions-service-*-standalone.jar $dir/hockey-predictions.jar
+sudo chown -R hockey:hockey $dir
+
