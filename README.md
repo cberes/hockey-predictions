@@ -1,25 +1,6 @@
-# hockey-predictions-service
+# hockey-predictions
 
-A web service that provides predictions of hockey games. Written in Clojure, built on Ring and Compojure.
-
-## Usage
-
-Source configuration variables, then run
-
-    lein ring server-headless
-
-or
-
-    lein ring uberjar
-    java -jar target/hockey-predictions-service-0.1.0-SNAPSHOT-standalone.jar
-
-## Configuration
-
-The following environment variables need to be set:
-
-0. `HOCKEY_WEB_DB_URL` (JDBC URL, e.g. `//127.0.0.1:5432/hockey_stats?currentSchema=public&stringtype=unspecified`)
-0. `HOCKEY_WEB_DB_USERNAME` (database username)
-0. `HOCKEY_WEB_DB_PASSWORD` (database password)
+A website that provides predictions of hockey games. The back-end uses Clojure and Ring, and the front-end is uses Angular 2 and Typescript.
 
 ## License
 
