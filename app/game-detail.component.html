@@ -1,0 +1,30 @@
+<table class="game">
+  <tr>
+    <th></th>
+    <th class="score" *ngIf="includeScore">Final</th>
+    <th class="score"><abbr title="Predicted">Pred.</abbr></th>
+  </tr>
+  <tr>
+    <td>{{game.away.team.location}}</td>
+    <td class="score" *ngIf="includeScore">{{game.away.score}}</td>
+    <td class="score">
+      <abbr title="{{game.prediction.away_score | number:'1.0-2'}}">
+        {{displayAwayPred | number:'1.0-0'}}
+      </abbr>
+    </td>
+  </tr>
+  <tr>
+    <td>{{game.home.team.location}}</td>
+    <td class="score" *ngIf="includeScore">{{game.home.score}}</td>
+    <td class="score">
+      <abbr title="{{game.prediction.home_score | number:'1.0-2'}}">
+        {{displayHomePred | number:'1.0-0'}}
+      </abbr>
+    </td>
+  </tr>
+  <tr>
+    <td>{{game.scheduled | date:'fullDate'}}</td>
+    <td *ngIf="includeScore"></td>
+    <td><facebook-share url="{{config.protocolAndHost}}/game/{{game.id}}"></facebook-share></td>
+  </tr>
+</table>

@@ -1,0 +1,17 @@
+.game {
+  color: white;
+  background-color: #607D8B;
+  border-radius: 4px;
+  margin: 0 auto;
+}
+table.game {
+  border-collapse: separate;
+  border-spacing: 2em 0.5em;
+}
+td.score, th.score {
+  text-align: center;
+}
+.score abbr {
+  text-decoration: none;
+  cursor: help;
+}
